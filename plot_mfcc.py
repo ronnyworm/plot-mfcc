@@ -20,7 +20,7 @@ with open('outmfcc_D_A.csv', 'r') as csvfile:
     	else:
         	rows += [row]
 
-    nprows = np.array(rows).T
+    nprows = np.array(rows)
 
 samples = None
 with open('samples.csv', 'r') as csvfile:
@@ -36,17 +36,22 @@ with open('samples.csv', 'r') as csvfile:
     samples = np.array(rows).T
     
 
-x = nprows[1].astype("float64")
-# siehe Verstärkung am Ende der Zeile
-plt.plot(samples[0].astype("float64"), samples[1].astype("float64") * 50)
-plt.plot(x, nprows[2].astype("float64"))
-plt.plot(x, nprows[15].astype("float64"))
-plt.plot(x, nprows[18].astype("float64"),color="blue")
-print(meta[2])
-print(meta[15])
-print(meta[28])
+import pylab
+filenames = []
+for i in range(0,len(nprows)):
+    values = nprows[i][2:].astype("float64")
 
-plt.legend(['y = samples', 'y = ' + meta[2], 'y = ' + meta[15], 'y = ' + meta[28]], loc='upper left')
-plt.xticks(np.arange(min(x), max(x)+0.2, 0.2))
+    plt.text(0, 135, 'Frame ' + str(i))
+    plt.hist(np.arange(0, nprows.shape[1] - 2), values)
+    plt.xticks(np.arange(0, nprows.shape[1] - 2, 2))
+    plt.yticks(np.arange(-60, 180, 20))
 
-plt.show()
+    pylab.savefig(str(i) + '.jpg')
+    filenames += [str(i) + '.jpg']
+    plt.close()
+
+images = []
+import imageio
+for filename in filenames:
+    images.append(imageio.imread(filename))
+imageio.mimsave('movie.gif', images)
