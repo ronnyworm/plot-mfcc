@@ -20,38 +20,31 @@ with open('outmfcc_D_A.csv', 'r') as csvfile:
     	else:
         	rows += [row]
 
-    nprows = np.array(rows)
-
-samples = None
-with open('samples.csv', 'r') as csvfile:
-    thereader = csv.reader(csvfile, delimiter=';', quotechar='\'')
-    rows = []
-    index = 0
-    for row in thereader:
-        if index < 2: # skip columnnames
-            index += 1
-        else:
-            rows += [row]
-
-    samples = np.array(rows).T
+    nprows = np.array(rows).T
     
+timestep = nprows[1].astype("float64")
+values = nprows[2:].astype("float64")
 
-import pylab
-filenames = []
-for i in range(0,len(nprows)):
-    values = nprows[i][2:].astype("float64")
+def f(x, y):
+    return values[y,x]
 
-    plt.text(0, 135, 'Frame ' + str(i))
-    plt.hist(np.arange(0, nprows.shape[1] - 2), values)
-    plt.xticks(np.arange(0, nprows.shape[1] - 2, 2))
-    plt.yticks(np.arange(-60, 180, 20))
+x = np.linspace(0, 178, 179).astype("int64")
+y = np.linspace(0, 38, 39).astype("int64")
 
-    pylab.savefig(str(i) + '.jpg')
-    filenames += [str(i) + '.jpg']
-    plt.close()
+X, Y = np.meshgrid(x, y)
+Z = f(X, Y)
 
-images = []
-import imageio
-for filename in filenames:
-    images.append(imageio.imread(filename))
-imageio.mimsave('movie.gif', images)
+fig = plt.figure()
+from mpl_toolkits import mplot3d
+ax = plt.axes(projection='3d')
+ax.view_init(20, 30)
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+                cmap='viridis', edgecolor='none')
+ax.set_xlabel('timestep')
+ax.set_ylabel('mfcc no')
+ax.set_zlabel('value');
+plt.show()
+
+
+#plt.xticks(np.arange(0, nprows.shape[1] - 2, 2))
+#plt.yticks(np.arange(-60, 180, 20))
