@@ -23,3 +23,8 @@ The samples were extracted with sox:
 ![asdf](result3d.png)
 
 Check out the code for visualising a 3D array in this commit. I couldn't find an easier solution anywhere else yet but I'm sure it CAN be done easier than this ...
+
+## Result (Commit 0925)
+![asdf](resultwavelets.png)
+
+Wavelets are calculated with the pywt library.
