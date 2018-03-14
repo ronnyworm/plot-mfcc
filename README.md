@@ -17,14 +17,19 @@ The samples were extracted with sox:
     cat out.txt | sed -E -e 's/^ +//g' -e 's/  +/;/g' > samples.csv
 
 ## Result (Commit 2ab3)
-![asdf](result.png)
+![asdf](results/result.png)
 
 ## Result (Commit f542)
-![asdf](result3d.png)
+![asdf](results/result3d.png)
 
 Check out the code for visualising a 3D array in this commit. I couldn't find an easier solution anywhere else yet but I'm sure it CAN be done easier than this ...
 
 ## Result (Commit 0925)
-![asdf](resultwavelets.png)
+![asdf](results/resultwavelets.png)
 
 Wavelets are calculated with the pywt library.
+
+## Result (Commit 61a2)
+![asdf](results/resultwaveletsaudacity.png)
+
+Next step in understanding wavelets.
