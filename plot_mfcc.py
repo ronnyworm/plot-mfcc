@@ -7,7 +7,11 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import pywt
+from scipy.io import wavfile
 
+def write_to_file(filename, samples, sr):
+	samples_reshaped = np.array(samples).reshape(len(samples), 1)
+	wavfile.write(filename, sr, samples_reshaped)
 
 samples = None
 with open('samples.csv', 'r') as csvfile:
@@ -25,13 +29,13 @@ with open('samples.csv', 'r') as csvfile:
 timesteps = samples[0].astype("float64")
 values = samples[1].astype("float64")
 
-wavelettype = "db10"
-cA, cD = pywt.dwt(samples[1], wavelettype)
 
+wavelettype = "db2"
+num = 10
+coeffs = pywt.wavedec(samples[1], wavelettype, level=num)
+# approx not interesting
+rev = list(reversed(coeffs[1:]))
 
-from scipy.io import wavfile
-samples_reshaped = np.array(cA).reshape(len(cA), 1)
-wavfile.write(wavelettype + "-approx.wav", 22050, samples_reshaped)
-
-samples_reshaped = np.array(cD).reshape(len(cD), 1)
-wavfile.write(wavelettype + "-detail.wav", 22050, samples_reshaped)
+for i in range(num):
+	write_to_file(wavelettype + "-" + str(10 - i) + "-detail.wav", rev[i], int(44100 / (len(samples[1]) / len(rev[i]))))
+	print(len(rev[i]))
