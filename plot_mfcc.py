@@ -25,15 +25,13 @@ with open('samples.csv', 'r') as csvfile:
 timesteps = samples[0].astype("float64")
 values = samples[1].astype("float64")
 
-cA, cD = pywt.dwt(samples[1], "db2")
+wavelettype = "db10"
+cA, cD = pywt.dwt(samples[1], wavelettype)
 
-# siehe Verstärkung am Ende der Zeile
-plt.plot(timesteps, values * 50)
-plt.plot(timesteps[:len(cA)], cA * 50)
-plt.plot(timesteps[:len(cD)], cD * 50)
 
-plt.title("Samples with db2 Wavelet")
-plt.legend(['samples', 'approximation coefficients', 'detail coefficients'], loc='upper left')
-plt.xticks(np.arange(min(timesteps), max(timesteps)+0.2, 0.2))
+from scipy.io import wavfile
+samples_reshaped = np.array(cA).reshape(len(cA), 1)
+wavfile.write(wavelettype + "-approx.wav", 22050, samples_reshaped)
 
-plt.show()
+samples_reshaped = np.array(cD).reshape(len(cD), 1)
+wavfile.write(wavelettype + "-detail.wav", 22050, samples_reshaped)
